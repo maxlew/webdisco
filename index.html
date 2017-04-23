@@ -1,0 +1,119 @@
+<!doctype html>
+<html>
+  <head>
+	<title>Web Disco 2000</title>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+	<script src="/app.js"></script>
+	<script src="/tone.js"></script>
+
+	<style>
+		body{
+			background-color: #333;
+			color: #FFF;
+		}
+		.seq{
+		}
+		.seq .step{
+			border-right: 1px solid #A5A5A5;
+			width: 30px;
+			height: 15px;
+		}
+		.seq .key{
+			background-color: #FFF;
+			border-right: 1px solid #333;
+			width: 30px;
+			height: 15px;
+			font-size: 10px;
+			text-align: center;
+			color: #333;
+		}
+		.seq .note.sharp .key{
+			background-color: #000;
+			color: #FFF;
+		}
+		.seq .note{
+			/*border-bottom: 1px solid #CCC;*/
+			display: flex;
+			
+		}
+		.seq .step{
+			background-color: #D2D2D2;
+		}
+		.seq .step.oddBar{
+			background-color: #C5C5C5;
+		}
+
+		.seq .note.sharp .step,
+		.seq .note.odd .step{
+			background-color: #BDBDBD;
+		}
+
+		.seq .note.sharp .step.oddBar,
+		.seq .note.odd .step.oddBar{
+			background-color: #B2B2B2;
+		}
+
+		.step{
+			box-sizing: border-box;	
+		}
+
+		.step.active{
+			background-color: red !important;
+			border: 1px solid #000;
+
+		}
+		.step.playing{
+			border-left: 2px solid red;
+		}
+		.step.active.playing{
+			border: 1px solid #000;
+		}
+	</style>
+  </head>
+  <body ng-app="WebDisco">
+
+  	<div class="main" ng-controller="WebDiscoController as WDC">
+
+  		<button ng-click="WDC.play()">play</button>
+  		<button ng-click="WDC.pause()">pause</button>
+
+			Tempo: <input type="tempo" ng-model="WDC.tempo">
+
+  		<div class="synth">
+  		<h2>Synth</h2>
+  			<button ng-click="WDC.SynthLength = WDC.SynthLength * 2">x2</button> <button ng-click="WDC.SynthLength = WDC.SynthLength / 2">/2</button>
+			<div class="seq">
+				<div class="note" ng-class="{'sharp': WDC.isSharp(note)}" ng-repeat="(note, row) in WDC.SynthGrid">
+					<div class="key">{{note}}</div>
+					<div class="step" ng-repeat="i in WDC.getLength(WDC.SynthLength) track by $index" ng-click="WDC.toggleSynthNote(WDC.SynthGrid, note, $index)" ng-class="{'active': WDC.NoteType(WDC.SynthGrid,note, $index) == true, 'playing': WDC.isActiveBeat($index, 'synth'), 'oddBar': WDC.isOddBar($index, (WDC.SynthLength/4))}"></div>
+				</div>
+			</table>
+		</div>
+
+  		<div class="synth">
+  		<h2>Mono Synth</h2>
+  		<button ng-click="WDC.BassLength = WDC.BassLength * 2">x2</button> <button ng-click="WDC.BassLength = WDC.BassLength / 2">/2</button>
+			<div class="seq">
+				<div class="note" ng-class="{'sharp': WDC.isSharp(note)}" ng-repeat="(note, row) in WDC.BassGrid">
+					<div class="key">{{note}}</div>
+					<div class="step" ng-repeat="i in WDC.getLength(WDC.BassLength) track by $index" ng-click="WDC.toggleBassNote(note, $index)" ng-class="{'active': WDC.NoteType(WDC.BassGrid, note, $index) == true, 'playing': WDC.isActiveBeat($index, 'bass'), 'oddBar': WDC.isOddBar($index, (WDC.BassLength/4))}"></div>
+				</div>
+			</table>
+		</div>
+
+  		<div class="drum">
+  		<h2>Drum</h2>
+  		<button ng-click="WDC.DrumLength = WDC.DrumLength * 2">x2</button> <button ng-click="WDC.DrumLength = WDC.DrumLength / 2">/2</button>
+			<div class="seq">
+				<div class="note" ng-class-odd="'odd'" ng-repeat="(drum, row) in WDC.DrumGrid">
+					<div class="key">{{drum}}</div>
+					<div class="step" ng-repeat="i in WDC.getLength(WDC.DrumLength) track by $index" ng-click="WDC.toggleBeat(drum, $index)" ng-class="{'active': WDC.NoteType(WDC.DrumGrid, drum, $index) == true, 'playing': WDC.isActiveBeat($index, 'drum'), 'oddBar': WDC.isOddBar($index, (WDC.DrumLength/4))}"></div>
+				</div>
+			</div>
+		</div>
+
+  	</div>
+	
+  </body>
+</html>
