@@ -21,8 +21,8 @@ var io = require('socket.io')(server);
 
 
 // listen on 8080
-server.listen(8080, function(){
-	console.log('listening on *:8080');
+server.listen(443, function(){
+	console.log('listening on *:443');
 });
 
 app.get('/', function(req, res){
