@@ -2,7 +2,7 @@ angular.module('WebDisco', []
 	).factory('socket', function($rootScope) {
 	// Open a WebSocket connection
 
-	socket = io('https://192.168.0.12:8080');
+	socket = io();
 
 	return {
 		on: function (eventName, callback) {

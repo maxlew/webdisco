@@ -13,7 +13,6 @@ var options = {
 	key: fs.readFileSync('ssl/server.key'),
 	cert: fs.readFileSync('ssl/server.crt')
 };
-var domain = "max.local.genero.com";
 ////
 
 
